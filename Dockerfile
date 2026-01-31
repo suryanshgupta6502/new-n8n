@@ -1,17 +1,17 @@
-# 1. Start with the official n8n image (using Alpine Linux)
+# 1. Use the official image
 FROM n8nio/n8n:latest
 
-# 2. Switch to root user to install new software
+# 2. Switch to root user to install tools
 USER root
 
-# 3. Install FFmpeg and Fonts
-# We use 'apk' because the base image is Alpine Linux
-RUN apk add --update ffmpeg font-liberation ttf-dejavu && \
-    rm -rf /var/cache/apk/*
+# 3. Install FFmpeg and Fonts (Using apt-get for Debian)
+RUN apt-get update && \
+    apt-get install -y ffmpeg fonts-liberation fontconfig && \
+    rm -rf /var/lib/apt/lists/*
 
-# 4. Create a specific folder for media processing to avoid permission errors
+# 4. Create the media folder (Safe permissions)
 RUN mkdir -p /home/node/media && \
     chown -R node:node /home/node/media
 
-# 5. Switch back to the standard 'node' user for security
+# 5. Switch back to the 'node' user
 USER node
